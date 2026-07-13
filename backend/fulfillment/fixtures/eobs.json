@@ -1,0 +1,32 @@
+{
+  "eobs": [
+    {
+      "eob_id": "EOB202503001",
+      "member_id": "99999100001",
+      "claim_ids": ["CLM2025031500123"],
+      "issue_date": "2025-03-25",
+      "summary": {
+        "total_billed": 240.00,
+        "total_plan_paid": 70.00,
+        "total_member_responsibility": 120.00,
+        "total_discount": 50.00
+      },
+      "primary_reason_for_member_responsibility": "deductible_not_met",
+      "explanation": "Visit applied to your deductible. Once met, copay applies going forward."
+    },
+    {
+      "eob_id": "EOB202504001",
+      "member_id": "99999100004",
+      "claim_ids": ["CLM2025040200789"],
+      "issue_date": "2025-04-12",
+      "summary": {
+        "total_billed": 1850.00,
+        "total_plan_paid": 0.00,
+        "total_member_responsibility": 0.00,
+        "total_discount": 0.00
+      },
+      "primary_reason_for_member_responsibility": "denied_out_of_network",
+      "explanation": "Claim denied because the provider is non-participating and prior authorization was not obtained for non-emergency care. Member is held harmless pending appeal."
+    }
+  ]
+}

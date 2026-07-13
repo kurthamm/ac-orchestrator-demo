@@ -1,0 +1,49 @@
+{
+  "accumulators": [
+    {
+      "member_id": "99999100001",
+      "plan_year": 2025,
+      "deductible_met": 750.00,
+      "deductible_total": 1500.00,
+      "moop_met": 950.00,
+      "moop_total": 5000.00,
+      "as_of_date": "2025-04-25"
+    },
+    {
+      "member_id": "99999100002",
+      "plan_year": 2025,
+      "deductible_met": 0.00,
+      "deductible_total": 0.00,
+      "moop_met": 320.00,
+      "moop_total": 3500.00,
+      "as_of_date": "2025-04-25"
+    },
+    {
+      "member_id": "99999100003",
+      "plan_year": 2025,
+      "deductible_met": 1240.00,
+      "deductible_total": 4500.00,
+      "moop_met": 1240.00,
+      "moop_total": 8700.00,
+      "as_of_date": "2025-04-25"
+    },
+    {
+      "member_id": "99999100004",
+      "plan_year": 2025,
+      "deductible_met": 0.00,
+      "deductible_total": 1500.00,
+      "moop_met": 0.00,
+      "moop_total": 5000.00,
+      "as_of_date": "2025-04-25"
+    },
+    {
+      "member_id": "99999100005",
+      "plan_year": 2025,
+      "deductible_met": 0.00,
+      "deductible_total": 0.00,
+      "moop_met": 180.00,
+      "moop_total": 4500.00,
+      "as_of_date": "2025-04-25"
+    }
+  ]
+}

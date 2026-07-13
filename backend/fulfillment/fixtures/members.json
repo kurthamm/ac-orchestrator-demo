@@ -1,0 +1,127 @@
+{
+  "members": [
+    {
+      "member_id": "99999100001",
+      "first_name": "Maria",
+      "last_name": "Rodriguez",
+      "dob": "1985-03-12",
+      "lob": "Medicaid",
+      "plan_name": "Generic Health Plus Medicaid",
+      "status": "active",
+      "effective_date": "2024-01-01",
+      "term_date": null,
+      "address": {
+        "street": "123 Main Street",
+        "city": "Columbia",
+        "state": "SC",
+        "zip": "29201"
+      },
+      "phone": "+18035550101",
+      "email": "maria.r@example.com",
+      "language_preference": "en",
+      "current_pcp_npi": "1111111111",
+      "dependents": [
+        {
+          "member_id": "99999100001-D1",
+          "first_name": "Sofia",
+          "relationship": "child",
+          "dob": "2015-06-20"
+        }
+      ],
+      "additional_plans": []
+    },
+    {
+      "member_id": "99999100002",
+      "first_name": "James",
+      "last_name": "Wilson",
+      "dob": "1952-08-04",
+      "lob": "Medicare D-SNP",
+      "plan_name": "Generic Health Plus Medicare DSNP",
+      "status": "active",
+      "effective_date": "2023-01-01",
+      "term_date": null,
+      "address": {
+        "street": "742 Oak Avenue",
+        "city": "Columbia",
+        "state": "SC",
+        "zip": "29203"
+      },
+      "phone": "+18035550102",
+      "email": "j.wilson@example.com",
+      "language_preference": "en",
+      "current_pcp_npi": "2222222222",
+      "dependents": [],
+      "additional_plans": ["Medicare Part D"]
+    },
+    {
+      "member_id": "99999100003",
+      "first_name": "Linda",
+      "last_name": "Chen",
+      "dob": "1978-11-23",
+      "lob": "Marketplace",
+      "plan_name": "Ambetter Silver",
+      "status": "grace_period",
+      "effective_date": "2025-01-01",
+      "term_date": null,
+      "grace_period_end": "2025-04-30",
+      "address": {
+        "street": "55 Pine Street",
+        "city": "Charleston",
+        "state": "SC",
+        "zip": "29401"
+      },
+      "phone": "+18035550103",
+      "email": "linda.chen@example.com",
+      "language_preference": "en",
+      "current_pcp_npi": "3333333333",
+      "dependents": [],
+      "additional_plans": []
+    },
+    {
+      "member_id": "99999100004",
+      "first_name": "Robert",
+      "last_name": "Davis",
+      "dob": "1990-05-17",
+      "lob": "Medicaid",
+      "plan_name": "Generic Health Plus Medicaid",
+      "status": "active",
+      "effective_date": "2024-06-01",
+      "term_date": null,
+      "address": {
+        "street": "88 Elm Court",
+        "city": "Greenville",
+        "state": "SC",
+        "zip": "29601"
+      },
+      "phone": "+18035550104",
+      "email": "rdavis@example.com",
+      "language_preference": "en",
+      "current_pcp_npi": "4444444444",
+      "dependents": [],
+      "additional_plans": []
+    },
+    {
+      "member_id": "99999100005",
+      "first_name": "Sarah",
+      "last_name": "Thompson",
+      "dob": "1958-02-09",
+      "lob": "Medicare",
+      "plan_name": "Generic Health Plus Medicare Advantage",
+      "status": "active",
+      "effective_date": "2023-01-01",
+      "term_date": null,
+      "address": {
+        "street": "210 River Road",
+        "city": "Columbia",
+        "state": "SC",
+        "zip": "29201"
+      },
+      "phone": "+18035550105",
+      "email": "sarah.t@example.com",
+      "language_preference": "en",
+      "current_pcp_npi": "5555555555",
+      "dependents": [],
+      "additional_plans": []
+    }
+  ]
+}
