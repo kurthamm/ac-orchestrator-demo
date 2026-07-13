@@ -16,3 +16,7 @@ __pycache__/
 # Local scratch
 .omc/
 *.log
+
+# Lambda packaging residue (bundled SDK) — never commit
+backend/session-data/*
+!backend/session-data/handler.py
