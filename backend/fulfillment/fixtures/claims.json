@@ -87,6 +87,31 @@
       "expected_completion": "2025-05-10",
       "denial_reason": null,
       "appeal_eligible": false
+    },
+    {
+      "claim_id": "CLM2026061800991",
+      "member_id": "99999100001",
+      "provider_npi": "9999998888",
+      "provider_name": "Midlands Imaging",
+      "service_date": "2026-06-18",
+      "service_description": "MRI imaging",
+      "place_of_service": "outpatient",
+      "in_network": true,
+      "status": "denied",
+      "billed_amount": 412.00,
+      "allowed_amount": 0.00,
+      "plan_paid": 0.00,
+      "member_responsibility": 0.00,
+      "responsibility_breakdown": {
+        "deductible": 0.00,
+        "copay": 0.00,
+        "coinsurance": 0.00,
+        "non_covered": 0.00
+      },
+      "denial_code": "CO-197",
+      "denial_reason": "Precertification/authorization absent",
+      "denial_explanation": "Service requires prior authorization before treatment.",
+      "appeal_eligible": true
     }
   ]
 }

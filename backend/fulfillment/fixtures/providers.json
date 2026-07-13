@@ -127,6 +127,55 @@
       "gender": "male",
       "languages": ["en"],
       "distance_zip_seed": "29204"
+    },
+    {
+      "npi": "1111119999",
+      "first_name": "Elena",
+      "last_name": "Alvarez",
+      "credentials": "MD",
+      "specialty": "Family Medicine",
+      "is_pcp_eligible": true,
+      "practice_name": "Alvarez Family Medicine",
+      "address": {"street": "450 Assembly Street", "city": "Columbia", "state": "SC", "zip": "29201"},
+      "phone": "+18035550555",
+      "in_network": true,
+      "accepting_new_patients": false,
+      "gender": "female",
+      "languages": ["en", "es"],
+      "distance_zip_seed": "29201",
+      "status": "retiring"
+    },
+    {
+      "npi": "1111112222",
+      "first_name": "Sofia",
+      "last_name": "Herrera",
+      "credentials": "MD",
+      "specialty": "Family Medicine",
+      "is_pcp_eligible": true,
+      "practice_name": "Herrera Primary Care",
+      "address": {"street": "520 Main Street", "city": "Columbia", "state": "SC", "zip": "29201"},
+      "phone": "+18035550556",
+      "in_network": true,
+      "accepting_new_patients": true,
+      "gender": "female",
+      "languages": ["en", "es"],
+      "distance_zip_seed": "29201"
+    },
+    {
+      "npi": "1111113333",
+      "first_name": "Carlos",
+      "last_name": "Mendez",
+      "credentials": "MD",
+      "specialty": "Family Medicine",
+      "is_pcp_eligible": true,
+      "practice_name": "Mendez Family Health",
+      "address": {"street": "580 Assembly Street", "city": "Columbia", "state": "SC", "zip": "29201"},
+      "phone": "+18035550557",
+      "in_network": true,
+      "accepting_new_patients": true,
+      "gender": "male",
+      "languages": ["en", "es"],
+      "distance_zip_seed": "29201"
     }
   ]
 }

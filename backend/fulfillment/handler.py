@@ -86,6 +86,12 @@ def verify_eligibility(args, session):
     m = _find_member(member_id)
     if not m:
         return err("Member not found")
+    # Look up current PCP name
+    current_pcp_name = None
+    if m.get("current_pcp_npi"):
+        pcp = next((p for p in _providers() if p["npi"] == m["current_pcp_npi"]), None)
+        if pcp:
+            current_pcp_name = f"Dr. {pcp['first_name']} {pcp['last_name']}"
     return ok({
         "status": m["status"],
         "plan_name": m["plan_name"],
@@ -94,6 +100,7 @@ def verify_eligibility(args, session):
         "term_date": m.get("term_date"),
         "grace_period_end": m.get("grace_period_end"),
         "additional_plans": m.get("additional_plans", []),
+        "current_pcp_name": current_pcp_name,
     })
 
 
@@ -404,8 +411,13 @@ def lambda_handler(event, context):
 
     if not tool_name:
         return err("tool_name is required", code="missing_tool")
+
+    # Support member_id as tool argument, falling back to session_attributes
     if "member_id" not in session:
-        return err("session_attributes.member_id is required (auth must run first)", code="not_authenticated")
+        member_id_arg = arguments.get("member_id")
+        if not member_id_arg:
+            return err("member_id is required (pass as tool argument or session attribute)", code="not_authenticated")
+        session = dict(session, member_id=member_id_arg)
 
     handler = TOOLS.get(tool_name)
     if not handler:
