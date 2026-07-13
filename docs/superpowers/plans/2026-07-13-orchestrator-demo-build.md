@@ -184,6 +184,8 @@ aws customer-profiles search-profiles --domain-name amazon-connect-aetheriacc --
 
 - [ ] **Step 2: Create (or update if Step 1 found one)**
 
+If Step 1 found an existing ProfileId, run `aws customer-profiles update-profile --profile-id <id> ...` with the same fields instead of create-profile.
+
 ```bash
 aws customer-profiles create-profile --domain-name amazon-connect-aetheriacc --region us-east-1 \
   --first-name Maria --last-name Rodriguez --phone-number "$KURT_CELL" \

@@ -99,7 +99,7 @@ def test_profile_lookup_empty_phone_number():
 
 
 def test_profile_lookup_no_match():
-    """Test that no profile found raises LookupError with phone number."""
+    """Test that no profile found raises LookupError with redacted phone number."""
     mock_profiles_client = MagicMock()
     mock_profiles_client.search_profiles.return_value = {
         'Items': []
@@ -117,7 +117,9 @@ def test_profile_lookup_no_match():
         with pytest.raises(LookupError) as exc_info:
             lambda_handler(event, None)
 
-    assert '+15555550100' in str(exc_info.value)
+    # Error message should contain last 4 digits of phone (redacted)
+    assert '0100' in str(exc_info.value)
+    assert 'No profile found' in str(exc_info.value)
 
 
 def test_profile_lookup_multiple_matches():

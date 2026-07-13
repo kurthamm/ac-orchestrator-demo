@@ -15,6 +15,11 @@ qconnect = boto3.client("qconnect")
 INSTANCE_ID = "d232199a-e1f4-4d84-a77e-10f8bfc6468f"
 
 
+def _redact(v):
+    """Redact sensitive values for logging: show last 4 chars only."""
+    return f"...{str(v)[-4:]}" if v else "<empty>"
+
+
 def parse_session_arn(arn: str):
     parts = arn.split(":session/")
     if len(parts) != 2 or "/" not in parts[1]:
@@ -30,6 +35,8 @@ def lambda_handler(event, context):
     if not member_id:
         raise ValueError("memberId missing: profile lookup did not run or found no match")
 
+    logger.info("operation=push_member_id member_id=%s", _redact(member_id))
+
     contact = connect.describe_contact(InstanceId=INSTANCE_ID, ContactId=contact_id)["Contact"]
     session_arn = contact["WisdomInfo"]["SessionArn"]
     assistant_id, session_id = parse_session_arn(session_arn)
@@ -38,7 +45,7 @@ def lambda_handler(event, context):
         assistantId=assistant_id, sessionId=session_id,
         data=[{"key": "memberId", "value": {"stringValue": member_id}}],
     )
-    logger.info("memberId=%s pushed to session %s", member_id, session_id)
+    logger.info("result=ok operation=push_member_id member_id=%s", _redact(member_id))
 
     # Register the orchestration AI agent with this session
     orchestrator_ai_agent_id = os.environ["ORCHESTRATOR_AI_AGENT_ID"]
@@ -51,6 +58,6 @@ def lambda_handler(event, context):
             }
         ]
     )
-    logger.info("orchestrator agent %s registered with session %s", orchestrator_ai_agent_id, session_id)
+    logger.info("result=ok operation=register_orchestrator member_id=%s", _redact(member_id))
 
     return {"status": "ok", "memberId": member_id}

@@ -100,7 +100,7 @@
 **Member ID:** 99999100001  
 **Expected PCP:** Dr. Alvarez (note: retired → current-PCP card shown)  
 **Available Providers:** Herrera, Mendez (Spanish-speaking, downtown Columbia area)  
-**Pending Claim:** $400 imaging bill → CO-197 denied (non-emergency requires referral)
+**Pending Claim:** $412.00 imaging bill → CO-197 denied (non-emergency requires referral)
 
 ### 5-Beat Flow
 

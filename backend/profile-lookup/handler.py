@@ -14,6 +14,11 @@ cp_client = boto3.client("customer-profiles")
 DOMAIN_NAME = "amazon-connect-aetheriacc"
 
 
+def _redact(v):
+    """Redact sensitive values for logging: show last 4 chars only."""
+    return f"...{str(v)[-4:]}" if v else "<empty>"
+
+
 def lambda_handler(event, context):
     """
     Args:
@@ -49,7 +54,7 @@ def lambda_handler(event, context):
         raise ValueError("phoneNumber is required and must not be empty")
 
     # Search Customer Profiles
-    logger.info("Searching profiles for phone: %s", phone_number)
+    logger.info("Searching profiles for phone: %s", _redact(phone_number))
     response = cp_client.search_profiles(
         DomainName=DOMAIN_NAME,
         KeyName="_phone",
@@ -59,10 +64,10 @@ def lambda_handler(event, context):
     # Validate exactly one match (or log warning if multiple, use first)
     items = response.get("Items", [])
     if not items:
-        raise LookupError(f"No profile found for phone: {phone_number}")
+        raise LookupError(f"No profile found for phone ending {_redact(phone_number)}")
 
     if len(items) > 1:
-        logger.warning("Multiple profiles found for phone %s; using first", phone_number)
+        logger.warning("Multiple profiles found for phone %s; using first", _redact(phone_number))
 
     profile = items[0]
     attributes = profile.get("Attributes", {})
@@ -70,7 +75,7 @@ def lambda_handler(event, context):
     # Validate memberId exists
     member_id = attributes.get("memberId")
     if not member_id:
-        raise LookupError(f"Profile for phone {phone_number} missing memberId")
+        raise LookupError(f"Profile for phone ending {_redact(phone_number)} missing memberId")
 
     # Extract fields (all as strings for Connect STRING_MAP)
     result = {
@@ -83,5 +88,5 @@ def lambda_handler(event, context):
         "language": attributes.get("language", "")
     }
 
-    logger.info("Profile lookup successful: memberId=%s", member_id)
+    logger.info("Profile lookup successful: memberId=%s", _redact(member_id))
     return result

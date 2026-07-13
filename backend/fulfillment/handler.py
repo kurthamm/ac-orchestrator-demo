@@ -28,6 +28,11 @@ logger.setLevel(logging.INFO)
 FIXTURE_DIR = Path(os.environ.get("FIXTURE_DIR", Path(__file__).parent / "fixtures"))
 
 
+def _redact(v):
+    """Redact sensitive values for logging: show last 4 chars only."""
+    return f"...{str(v)[-4:]}" if v else "<empty>"
+
+
 @lru_cache(maxsize=16)
 def _load(name: str):
     with open(FIXTURE_DIR / f"{name}.json") as f:
@@ -162,13 +167,15 @@ def check_claim_status(args, session):
         return ok({"match_count": 1, "claim": matches[0]})
     return ok({
         "match_count": len(matches),
-        "claims_summary": [
+        "claims": [
             {
                 "claim_id": c["claim_id"],
                 "provider_name": c["provider_name"],
                 "service_date": c["service_date"],
                 "status": c["status"],
                 "billed_amount": c["billed_amount"],
+                **({"denial_code": c["denial_code"]} if c.get("denial_code") else {}),
+                **({"denial_reason": c["denial_reason"]} if c.get("denial_reason") else {}),
             }
             for c in matches[:5]
         ],
@@ -291,13 +298,11 @@ def change_pcp(args, session):
         "change_timestamp": datetime.now(timezone.utc).isoformat(),
         "channel": "ivr",
     }
-    try:
-        with open("/tmp/pcp_change.json", "w") as f:
-            json.dump(record, f)
-    except OSError:
-        pass
+    with open("/tmp/pcp_change.json", "w") as f:
+        json.dump(record, f)
     return ok({
-        "committed": True,
+        "simulated": True,
+        "note": "demo backend — change recorded for this session only",
         "record": record,
         "id_card_eta_business_days": "7-10",
     })
@@ -343,11 +348,18 @@ def check_flex_card_balance(args, session):
 # Tool 8: search_provider_directory
 # ---------------------------------------------------------------------------
 def search_provider_directory(args, session):
+    member_id = session["member_id"]
+    m = _find_member(member_id)
+    if not m:
+        return err("Member not found")
+
     specialty = (args.get("specialty") or "").lower().strip()
     name_query = (args.get("name_query") or "").lower().strip()
-    location_zip = args.get("location_zip") or _find_member(session["member_id"])["address"]["zip"]
+    location_zip = args.get("location_zip") or m["address"]["zip"]
     accepting_new = args.get("accepting_new_only", False)
     in_network_only = args.get("in_network_only", True)
+    language = (args.get("language") or "").lower().strip() if args.get("language") else None
+    gender = (args.get("gender") or "").lower().strip() if args.get("gender") else None
 
     results = list(_providers())
     if specialty:
@@ -361,6 +373,10 @@ def search_provider_directory(args, session):
         results = [p for p in results if p["accepting_new_patients"]]
     if in_network_only:
         results = [p for p in results if p["in_network"]]
+    if language:
+        results = [p for p in results if language in p.get("languages", [])]
+    if gender:
+        results = [p for p in results if p.get("gender", "").lower() == gender]
 
     # Crude proximity sort: same zip first, then alphabetical.
     results.sort(key=lambda p: (p["distance_zip_seed"] != location_zip, p["last_name"]))
@@ -404,7 +420,6 @@ TOOLS = {
 
 
 def lambda_handler(event, context):
-    logger.info("event: %s", json.dumps(event))
     tool_name = event.get("tool_name")
     arguments = event.get("arguments") or {}
     session = event.get("session_attributes") or {}
@@ -419,6 +434,8 @@ def lambda_handler(event, context):
             return err("member_id is required (pass as tool argument or session attribute)", code="not_authenticated")
         session = dict(session, member_id=member_id_arg)
 
+    logger.info("tool=%s member_id=%s", tool_name, _redact(session.get("member_id")))
+
     handler = TOOLS.get(tool_name)
     if not handler:
         return err(f"Unknown tool: {tool_name}", code="unknown_tool")
@@ -429,5 +446,7 @@ def lambda_handler(event, context):
         logger.exception("tool %s raised", tool_name)
         return err(f"Tool {tool_name} failed: {exc}", code="tool_exception")
 
-    logger.info("result: %s", json.dumps(result))
+    ok_status = result.get("ok")
+    error_code = result.get("error_code", "")
+    logger.info("result tool=%s ok=%s error_code=%s", tool_name, ok_status, error_code)
     return result

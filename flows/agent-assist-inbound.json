@@ -114,8 +114,7 @@
           "ResponseType": "STRING_MAP"
         },
         "LambdaInvocationAttributes": {
-          "memberId": "$.Attributes.memberId",
-          "wisdomSessionArn": "$.WisdomSessionArn"
+          "memberId": "$.Attributes.memberId"
         }
       },
       "Transitions": {
