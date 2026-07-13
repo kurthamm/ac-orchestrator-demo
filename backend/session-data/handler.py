@@ -4,6 +4,7 @@ Placed AFTER the Connect assistant block in the inbound flow. Fails loudly:
 a missing memberId or session means the flow is miswired — surface it, don't mask it.
 """
 import logging
+import os
 import boto3
 
 logger = logging.getLogger()
@@ -38,4 +39,18 @@ def lambda_handler(event, context):
         data=[{"key": "memberId", "value": {"stringValue": member_id}}],
     )
     logger.info("memberId=%s pushed to session %s", member_id, session_id)
+
+    # Register the orchestration AI agent with this session
+    orchestrator_ai_agent_id = os.environ["ORCHESTRATOR_AI_AGENT_ID"]
+    qconnect.update_session(
+        assistantId=assistant_id, sessionId=session_id,
+        orchestratorConfigurationList=[
+            {
+                "aiAgentId": orchestrator_ai_agent_id,
+                "orchestratorUseCase": "Connect.AgentAssistance"
+            }
+        ]
+    )
+    logger.info("orchestrator agent %s registered with session %s", orchestrator_ai_agent_id, session_id)
+
     return {"status": "ok", "memberId": member_id}
