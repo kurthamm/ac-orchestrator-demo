@@ -10,6 +10,26 @@
   },
   "Actions": [
     {
+      "Identifier": "EnableAnalytics",
+      "Type": "UpdateContactRecordingBehavior",
+      "Parameters": {
+        "RecordingBehavior": {
+          "RecordedParticipants": [
+            "Agent",
+            "Customer"
+          ]
+        },
+        "AnalyticsBehavior": {
+          "Enabled": "True",
+          "AnalyticsLanguage": "en-US",
+          "AnalyticsMode": "RealTime"
+        }
+      },
+      "Transitions": {
+        "NextAction": "LookupCustomerProfile"
+      }
+    },
+    {
       "Identifier": "EnableLogging",
       "Type": "UpdateFlowLoggingBehavior",
       "Parameters": {
@@ -27,7 +47,7 @@
         "TextToSpeechEngine": "neural"
       },
       "Transitions": {
-        "NextAction": "LookupCustomerProfile"
+        "NextAction": "EnableAnalytics"
       }
     },
     {
