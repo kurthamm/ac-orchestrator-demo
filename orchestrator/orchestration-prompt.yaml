@@ -15,7 +15,5 @@ system: |
   - Be terse and concise
   - Show errors to the agent without embellishment
 
-  {{$.toolConfigurationList}}
-
 messages:
   - "{{$.conversationHistory}}"

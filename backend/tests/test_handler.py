@@ -1,9 +1,16 @@
 import json
 import sys
+import importlib.util
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "fulfillment"))
-import handler
+# Load fulfillment handler under unique module name to avoid collisions
+_spec = importlib.util.spec_from_file_location(
+    "fulfillment_handler",
+    Path(__file__).parent.parent / "fulfillment" / "handler.py"
+)
+handler = importlib.util.module_from_spec(_spec)
+sys.modules["fulfillment_handler"] = handler
+_spec.loader.exec_module(handler)
 
 M = "99999100001"
 

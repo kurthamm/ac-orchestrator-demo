@@ -1,5 +1,6 @@
 import sys
 import os
+import importlib.util
 from pathlib import Path
 from unittest.mock import MagicMock, patch, call
 import pytest
@@ -7,8 +8,17 @@ import pytest
 # Mock boto3 before importing handler
 sys.modules['boto3'] = MagicMock()
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "session-data"))
-from handler import parse_session_arn, lambda_handler
+# Load session-data handler under unique module name to avoid collisions
+_spec = importlib.util.spec_from_file_location(
+    "session_data_handler",
+    Path(__file__).parent.parent / "session-data" / "handler.py"
+)
+_handler_module = importlib.util.module_from_spec(_spec)
+sys.modules["session_data_handler"] = _handler_module
+_spec.loader.exec_module(_handler_module)
+
+parse_session_arn = _handler_module.parse_session_arn
+lambda_handler = _handler_module.lambda_handler
 
 def test_parse_session_arn():
     arn = "arn:aws:wisdom:us-east-1:441700732419:session/64d2c0aa-0a40-4c36-bef5-93cdb40b61da/11111111-2222-3333-4444-555555555555"
@@ -25,8 +35,8 @@ def test_lambda_handler_calls_update_session_with_orchestrator_agent():
         mock_connect = MagicMock()
         mock_qconnect = MagicMock()
 
-        with patch("handler.connect", mock_connect), \
-             patch("handler.qconnect", mock_qconnect):
+        with patch("session_data_handler.connect", mock_connect), \
+             patch("session_data_handler.qconnect", mock_qconnect):
 
             # Set up mock responses
             mock_connect.describe_contact.return_value = {
@@ -73,8 +83,8 @@ def test_lambda_handler_raises_on_missing_orchestrator_env_var():
         mock_connect = MagicMock()
         mock_qconnect = MagicMock()
 
-        with patch("handler.connect", mock_connect), \
-             patch("handler.qconnect", mock_qconnect):
+        with patch("session_data_handler.connect", mock_connect), \
+             patch("session_data_handler.qconnect", mock_qconnect):
 
             mock_connect.describe_contact.return_value = {
                 "Contact": {

@@ -15,6 +15,31 @@ if [[ "${1:-}" == "--with-tools" ]]; then
   WITH_TOOLS=true
 fi
 
+# Verify that tuning-loop resources exist before mutations
+echo "Verifying tuning-loop resources exist..."
+if ! aws qconnect get-ai-prompt \
+  --assistant-id "$ASSISTANT" \
+  --ai-prompt-id "$PROMPT_ID" \
+  --region "$REGION" \
+  &>/dev/null; then
+  echo "ERROR: AI prompt $PROMPT_ID not found in assistant $ASSISTANT" >&2
+  echo "This script only UPDATES pre-existing tuning-loop resources." >&2
+  exit 1
+fi
+
+if ! aws qconnect get-ai-agent \
+  --assistant-id "$ASSISTANT" \
+  --ai-agent-id "$AGENT_ID" \
+  --region "$REGION" \
+  &>/dev/null; then
+  echo "ERROR: AI agent $AGENT_ID not found in assistant $ASSISTANT" >&2
+  echo "This script only UPDATES pre-existing tuning-loop resources." >&2
+  exit 1
+fi
+
+echo "✓ Resources verified"
+echo ""
+
 # (a) Update AI prompt
 echo "Updating AI prompt $PROMPT_ID..."
 PROMPT_TEXT=$(cat "$DIR/orchestration-prompt.yaml")

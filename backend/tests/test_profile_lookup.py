@@ -1,4 +1,5 @@
 import sys
+import importlib.util
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
@@ -6,8 +7,16 @@ import pytest
 # Mock boto3 before importing handler
 sys.modules['boto3'] = MagicMock()
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "profile-lookup"))
-from handler import lambda_handler
+# Load profile-lookup handler under unique module name to avoid collisions
+_spec = importlib.util.spec_from_file_location(
+    "profile_lookup_handler",
+    Path(__file__).parent.parent / "profile-lookup" / "handler.py"
+)
+_handler_module = importlib.util.module_from_spec(_spec)
+sys.modules["profile_lookup_handler"] = _handler_module
+_spec.loader.exec_module(_handler_module)
+
+lambda_handler = _handler_module.lambda_handler
 
 
 def test_profile_lookup_happy_path():
@@ -38,7 +47,7 @@ def test_profile_lookup_happy_path():
         }
     }
 
-    with patch('handler.cp_client', mock_profiles_client):
+    with patch('profile_lookup_handler.cp_client', mock_profiles_client):
         result = lambda_handler(event, None)
 
     assert result == {
@@ -104,7 +113,7 @@ def test_profile_lookup_no_match():
         }
     }
 
-    with patch('handler.cp_client', mock_profiles_client):
+    with patch('profile_lookup_handler.cp_client', mock_profiles_client):
         with pytest.raises(LookupError) as exc_info:
             lambda_handler(event, None)
 
@@ -151,7 +160,7 @@ def test_profile_lookup_multiple_matches():
         }
     }
 
-    with patch('handler.cp_client', mock_profiles_client):
+    with patch('profile_lookup_handler.cp_client', mock_profiles_client):
         result = lambda_handler(event, None)
 
     # Should return first match
@@ -183,7 +192,7 @@ def test_profile_lookup_missing_member_id():
         }
     }
 
-    with patch('handler.cp_client', mock_profiles_client):
+    with patch('profile_lookup_handler.cp_client', mock_profiles_client):
         with pytest.raises(LookupError) as exc_info:
             lambda_handler(event, None)
 
