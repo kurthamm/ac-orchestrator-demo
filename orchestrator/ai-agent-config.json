@@ -1,0 +1,44 @@
+{
+  "orchestrationAIAgentConfiguration": {
+    "orchestrationAIPromptId": "PROMPT_ID",
+    "connectInstanceArn": "arn:aws:connect:us-east-1:441700732419:instance/d232199a-e1f4-4d84-a77e-10f8bfc6468f",
+    "locale": "en_US",
+    "toolConfigurations": [
+      {
+        "toolName": "verify_eligibility",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "toolId": "arn:aws:bedrock-agentcore:us-east-1:441700732419:gateway/centene-demo-gateway-kioqffwx7x/target/KJHBUJTBLI/tool/verify_eligibility",
+        "instruction": {
+          "instruction": "Use when the member's coverage, plan, or current PCP is relevant. Always pass member_id."
+        }
+      },
+      {
+        "toolName": "search_provider_directory",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "toolId": "arn:aws:bedrock-agentcore:us-east-1:441700732419:gateway/centene-demo-gateway-kioqffwx7x/target/KJHBUJTBLI/tool/search_provider_directory",
+        "instruction": {
+          "instruction": "Use when the member wants to find or switch to a provider. Filter by the member's zip and any stated language/gender/specialty preferences. Always pass member_id."
+        }
+      },
+      {
+        "toolName": "check_claim_status",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "toolId": "arn:aws:bedrock-agentcore:us-east-1:441700732419:gateway/centene-demo-gateway-kioqffwx7x/target/KJHBUJTBLI/tool/check_claim_status",
+        "instruction": {
+          "instruction": "Use when the member mentions a bill, claim, or EOB. Always pass member_id."
+        }
+      },
+      {
+        "toolName": "change_pcp",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "toolId": "arn:aws:bedrock-agentcore:us-east-1:441700732419:gateway/centene-demo-gateway-kioqffwx7x/target/KJHBUJTBLI/tool/change_pcp",
+        "instruction": {
+          "instruction": "Propose only after the member has chosen a specific provider. Always pass member_id."
+        },
+        "userInteractionConfiguration": {
+          "isUserConfirmationRequired": true
+        }
+      }
+    ]
+  }
+}
