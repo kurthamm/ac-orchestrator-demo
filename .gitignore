@@ -1,0 +1,18 @@
+# Secrets and credentials — never commit
+*.pem
+*.key
+*.crt
+.env
+.env.*
+*credentials*
+
+# Build/deploy artifacts
+*.zip
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+
+# Local scratch
+.omc/
+*.log
