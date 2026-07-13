@@ -1,0 +1,261 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "EnableLogging",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 40
+    },
+    "ActionMetadata": {}
+  },
+  "Actions": [
+    {
+      "Identifier": "EnableAnalytics",
+      "Type": "UpdateContactRecordingBehavior",
+      "Parameters": {
+        "RecordingBehavior": {
+          "RecordedParticipants": [
+            "Agent",
+            "Customer"
+          ]
+        },
+        "AnalyticsBehavior": {
+          "Enabled": "True",
+          "AnalyticsLanguage": "en-US",
+          "AnalyticsMode": "RealTime"
+        }
+      },
+      "Transitions": {
+        "NextAction": "LookupCustomerProfile"
+      }
+    },
+    {
+      "Identifier": "EnableLogging",
+      "Type": "UpdateFlowLoggingBehavior",
+      "Parameters": {
+        "FlowLoggingBehavior": "Enabled"
+      },
+      "Transitions": {
+        "NextAction": "SetVoice"
+      }
+    },
+    {
+      "Identifier": "SetVoice",
+      "Type": "UpdateContactTextToSpeechVoice",
+      "Parameters": {
+        "TextToSpeechVoice": "Joanna",
+        "TextToSpeechEngine": "neural"
+      },
+      "Transitions": {
+        "NextAction": "EnableAnalytics"
+      }
+    },
+    {
+      "Identifier": "LookupCustomerProfile",
+      "Type": "InvokeLambdaFunction",
+      "Parameters": {
+        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:441700732419:function:centene-demo-profile-lookup",
+        "InvocationTimeLimitSeconds": "8",
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        },
+        "LambdaInvocationAttributes": {
+          "phoneNumber": "$.CustomerEndpoint.Address"
+        }
+      },
+      "Transitions": {
+        "NextAction": "SetMemberId",
+        "Errors": [
+          {
+            "NextAction": "ProfileLookupFailed",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "SetMemberId",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "memberId": "$.External.memberId"
+        },
+        "TargetContact": "Current"
+      },
+      "Transitions": {
+        "NextAction": "CreateWisdomSession",
+        "Errors": [
+          {
+            "NextAction": "MemberIdSetFailed",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "CreateWisdomSession",
+      "Type": "CreateWisdomSession",
+      "Parameters": {
+        "WisdomAssistantArn": "arn:aws:wisdom:us-east-1:441700732419:assistant/64d2c0aa-0a40-4c36-bef5-93cdb40b61da"
+      },
+      "Transitions": {
+        "NextAction": "StoreWisdomSessionArn",
+        "Errors": [
+          {
+            "NextAction": "WisdomSessionFailed",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "StoreWisdomSessionArn",
+      "Type": "UpdateContactData",
+      "Parameters": {
+        "WisdomSessionArn": "$.Wisdom.SessionArn"
+      },
+      "Transitions": {
+        "NextAction": "InvokeSessionData",
+        "Errors": [
+          {
+            "NextAction": "WisdomStoreFailed",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "InvokeSessionData",
+      "Type": "InvokeLambdaFunction",
+      "Parameters": {
+        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:441700732419:function:centene-demo-session-data",
+        "InvocationTimeLimitSeconds": "8",
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        },
+        "LambdaInvocationAttributes": {
+          "memberId": "$.Attributes.memberId"
+        }
+      },
+      "Transitions": {
+        "NextAction": "SetWorkingQueue",
+        "Errors": [
+          {
+            "NextAction": "LambdaInvokeFailed",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "SetWorkingQueue",
+      "Type": "UpdateContactTargetQueue",
+      "Parameters": {
+        "QueueId": "arn:aws:connect:us-east-1:441700732419:instance/d232199a-e1f4-4d84-a77e-10f8bfc6468f/queue/6c1c9d9e-4bdf-436f-bb78-0c43aa9d86b2"
+      },
+      "Transitions": {
+        "NextAction": "TransferToQueue",
+        "Errors": [
+          {
+            "NextAction": "QueueSetFailed",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "TransferToQueue",
+      "Type": "TransferContactToQueue",
+      "Parameters": {},
+      "Transitions": {
+        "NextAction": "Disconnect",
+        "Errors": [
+          {
+            "NextAction": "TransferFailed",
+            "ErrorType": "NoMatchingError"
+          },
+          {
+            "NextAction": "TransferFailed",
+            "ErrorType": "QueueAtCapacity"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "ProfileLookupFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: customer profile lookup failed"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "MemberIdSetFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: failed to set member ID"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "WisdomSessionFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: Wisdom session creation failed"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "WisdomStoreFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: failed to store Wisdom session"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "LambdaInvokeFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: session data Lambda failed"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "QueueSetFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: failed to set working queue"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "TransferFailed",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Demo flow error: transfer to queue failed"
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "Disconnect",
+      "Type": "DisconnectParticipant",
+      "Parameters": {},
+      "Transitions": {}
+    }
+  ]
+}

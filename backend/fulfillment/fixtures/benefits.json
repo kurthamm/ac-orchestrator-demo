@@ -1,0 +1,115 @@
+{
+  "plans": {
+    "Generic Health Plus Medicaid": {
+      "deductible": { "individual": 1500, "family": 3000 },
+      "moop": { "individual": 5000, "family": 10000 },
+      "benefits": {
+        "primary_care": {
+          "covered": true,
+          "copay_in_network": 0,
+          "deductible_applies": false,
+          "prior_auth_required": false,
+          "visit_limit": null
+        },
+        "specialist": {
+          "covered": true,
+          "copay_in_network": 25,
+          "deductible_applies": true,
+          "prior_auth_required": false,
+          "referral_required": true
+        },
+        "diagnostic_imaging_mri": {
+          "covered": true,
+          "copay_in_network": 100,
+          "deductible_applies": true,
+          "prior_auth_required": true
+        },
+        "physical_therapy": {
+          "covered": true,
+          "copay_in_network": 30,
+          "deductible_applies": true,
+          "visit_limit": 30,
+          "prior_auth_required": false
+        },
+        "dental_routine": {
+          "covered": true,
+          "copay_in_network": 0,
+          "deductible_applies": false,
+          "visit_limit": 2,
+          "visit_limit_period": "annual"
+        },
+        "vision_routine": {
+          "covered": true,
+          "copay_in_network": 0,
+          "deductible_applies": false,
+          "visit_limit": 1,
+          "visit_limit_period": "annual"
+        },
+        "emergency_room": {
+          "covered": true,
+          "copay_in_network": 75,
+          "deductible_applies": true
+        }
+      }
+    },
+    "Generic Health Plus Medicare DSNP": {
+      "deductible": { "individual": 0, "family": 0 },
+      "moop": { "individual": 3500, "family": 7000 },
+      "benefits": {
+        "primary_care": { "covered": true, "copay_in_network": 0, "deductible_applies": false },
+        "specialist": { "covered": true, "copay_in_network": 0, "deductible_applies": false, "referral_required": false },
+        "diagnostic_imaging_mri": { "covered": true, "copay_in_network": 0, "deductible_applies": false, "prior_auth_required": true },
+        "physical_therapy": { "covered": true, "copay_in_network": 0, "visit_limit": null },
+        "dental_routine": { "covered": true, "copay_in_network": 0, "visit_limit": 4 },
+        "vision_routine": { "covered": true, "copay_in_network": 0 },
+        "emergency_room": { "covered": true, "copay_in_network": 90 }
+      }
+    },
+    "Ambetter Silver": {
+      "deductible": { "individual": 4500, "family": 9000 },
+      "moop": { "individual": 8700, "family": 17400 },
+      "benefits": {
+        "primary_care": { "covered": true, "copay_in_network": 30, "deductible_applies": false },
+        "specialist": { "covered": true, "copay_in_network": 65, "deductible_applies": true, "referral_required": false },
+        "diagnostic_imaging_mri": { "covered": true, "copay_in_network": 250, "deductible_applies": true, "prior_auth_required": true },
+        "physical_therapy": { "covered": true, "copay_in_network": 50, "visit_limit": 20 },
+        "dental_routine": { "covered": false },
+        "vision_routine": { "covered": false },
+        "emergency_room": { "covered": true, "copay_in_network": 500, "deductible_applies": true }
+      }
+    },
+    "Generic Health Plus Medicare Advantage": {
+      "deductible": { "individual": 0, "family": 0 },
+      "moop": { "individual": 4500, "family": 9000 },
+      "benefits": {
+        "primary_care": { "covered": true, "copay_in_network": 0 },
+        "specialist": { "covered": true, "copay_in_network": 30, "referral_required": false },
+        "diagnostic_imaging_mri": { "covered": true, "copay_in_network": 150, "prior_auth_required": true },
+        "physical_therapy": { "covered": true, "copay_in_network": 20, "visit_limit": 60 },
+        "dental_routine": { "covered": true, "copay_in_network": 0, "visit_limit": 2 },
+        "vision_routine": { "covered": true, "copay_in_network": 0 },
+        "emergency_room": { "covered": true, "copay_in_network": 100 }
+      }
+    }
+  },
+  "service_synonyms": {
+    "mri": "diagnostic_imaging_mri",
+    "magnetic resonance": "diagnostic_imaging_mri",
+    "imaging": "diagnostic_imaging_mri",
+    "pt": "physical_therapy",
+    "physical therapy": "physical_therapy",
+    "therapy": "physical_therapy",
+    "dental": "dental_routine",
+    "teeth": "dental_routine",
+    "cleaning": "dental_routine",
+    "vision": "vision_routine",
+    "eye exam": "vision_routine",
+    "glasses": "vision_routine",
+    "primary care": "primary_care",
+    "doctor visit": "primary_care",
+    "pcp": "primary_care",
+    "specialist": "specialist",
+    "er": "emergency_room",
+    "emergency": "emergency_room"
+  }
+}

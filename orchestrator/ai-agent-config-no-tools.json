@@ -1,0 +1,7 @@
+{
+  "orchestrationAIAgentConfiguration": {
+    "orchestrationAIPromptId": "PROMPT_ID",
+    "connectInstanceArn": "arn:aws:connect:us-east-1:441700732419:instance/d232199a-e1f4-4d84-a77e-10f8bfc6468f",
+    "locale": "en_US"
+  }
+}

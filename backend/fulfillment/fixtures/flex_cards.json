@@ -1,0 +1,35 @@
+{
+  "flex_cards": [
+    {
+      "member_id": "99999100002",
+      "card_id": "FLX99999100002",
+      "card_type": "OTC + Grocery + Utilities",
+      "allowance_amount": 350.00,
+      "allowance_period": "quarterly",
+      "current_balance": 285.50,
+      "spent_this_period": 64.50,
+      "period_start": "2025-04-01",
+      "period_end": "2025-06-30",
+      "categories": ["otc_health", "grocery", "utilities"],
+      "status": "active",
+      "recent_transactions": [
+        {"date": "2025-04-22", "merchant": "Walmart", "amount": 24.50, "category": "grocery"},
+        {"date": "2025-04-18", "merchant": "CVS Pharmacy", "amount": 40.00, "category": "otc_health"}
+      ]
+    },
+    {
+      "member_id": "99999100005",
+      "card_id": "FLX99999100005",
+      "card_type": "OTC",
+      "allowance_amount": 100.00,
+      "allowance_period": "quarterly",
+      "current_balance": 100.00,
+      "spent_this_period": 0.00,
+      "period_start": "2025-04-01",
+      "period_end": "2025-06-30",
+      "categories": ["otc_health"],
+      "status": "active",
+      "recent_transactions": []
+    }
+  ]
+}

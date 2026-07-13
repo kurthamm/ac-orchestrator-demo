@@ -1,0 +1,322 @@
+{
+  "Version": "2019-10-30",
+  "StartAction": "EnableLogging",
+  "Metadata": {
+    "entryPointPosition": {
+      "x": 40,
+      "y": 40
+    },
+    "ActionMetadata": {}
+  },
+  "Actions": [
+    {
+      "Identifier": "EnableLogging",
+      "Type": "UpdateFlowLoggingBehavior",
+      "Parameters": {
+        "FlowLoggingBehavior": "Enabled"
+      },
+      "Transitions": {
+        "NextAction": "SetVoice"
+      }
+    },
+    {
+      "Identifier": "SetVoice",
+      "Type": "UpdateContactTextToSpeechVoice",
+      "Parameters": {
+        "TextToSpeechVoice": "Joanna",
+        "TextToSpeechEngine": "neural"
+      },
+      "Transitions": {
+        "NextAction": "Welcome"
+      }
+    },
+    {
+      "Identifier": "Welcome",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Thanks for calling Generic Health Plan. To help you faster, please enter your eleven digit member ID, followed by the pound key."
+      },
+      "Transitions": {
+        "NextAction": "GetMemberId"
+      }
+    },
+    {
+      "Identifier": "GetMemberId",
+      "Type": "GetParticipantInput",
+      "Parameters": {
+        "StoreInput": "True",
+        "InputTimeLimitSeconds": "10",
+        "Text": "Please enter your eleven digit member ID, followed by the pound key.",
+        "InputValidation": {
+          "CustomValidation": {
+            "MaximumLength": "11"
+          }
+        }
+      },
+      "Transitions": {
+        "NextAction": "InvokeAuth",
+        "Errors": [
+          {
+            "NextAction": "AuthFailedMessage",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "InvokeAuth",
+      "Type": "InvokeLambdaFunction",
+      "Parameters": {
+        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:441700732419:function:centene-demo-auth",
+        "InvocationTimeLimitSeconds": "8",
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        },
+        "LambdaInvocationAttributes": {
+          "MemberId": "$.StoredCustomerInput"
+        }
+      },
+      "Transitions": {
+        "NextAction": "CheckAuthStatus",
+        "Errors": [
+          {
+            "NextAction": "AuthFailedMessage",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "CheckAuthStatus",
+      "Type": "Compare",
+      "Parameters": {
+        "ComparisonValue": "$.External.auth_status"
+      },
+      "Transitions": {
+        "NextAction": "AuthFailedMessage",
+        "Conditions": [
+          {
+            "NextAction": "SetSessionAttributes",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "success"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "NextAction": "AuthFailedMessage",
+            "ErrorType": "NoMatchingCondition"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "SetSessionAttributes",
+      "Type": "UpdateContactAttributes",
+      "Parameters": {
+        "Attributes": {
+          "member_id": "$.External.member_id",
+          "first_name": "$.External.first_name",
+          "last_name": "$.External.last_name",
+          "plan_name": "$.External.plan_name",
+          "lob": "$.External.lob"
+        },
+        "TargetContact": "Current"
+      },
+      "Transitions": {
+        "NextAction": "GreetByName",
+        "Errors": [
+          {
+            "NextAction": "GreetByName",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "GreetByName",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Hi $.Attributes.first_name. I have your account pulled up. How can I help you today?"
+      },
+      "Transitions": {
+        "NextAction": "CreateWisdomSession"
+      }
+    },
+    {
+      "Identifier": "CreateWisdomSession",
+      "Type": "CreateWisdomSession",
+      "Parameters": {
+        "WisdomAssistantArn": "arn:aws:wisdom:us-east-1:441700732419:assistant/9f6dff50-9358-4177-a67a-3959c9053930"
+      },
+      "Transitions": {
+        "NextAction": "StoreWisdomSessionArn",
+        "Errors": [
+          {
+            "NextAction": "PoliteClose",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "StoreWisdomSessionArn",
+      "Type": "UpdateContactData",
+      "Parameters": {
+        "WisdomSessionArn": "$.Wisdom.SessionArn"
+      },
+      "Transitions": {
+        "NextAction": "InvokeAIAgent",
+        "Errors": [
+          {
+            "NextAction": "PoliteClose",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "InvokeAIAgent",
+      "Type": "ConnectParticipantWithLexBot",
+      "Parameters": {
+        "Text": "How can I help?",
+        "LexV2Bot": {
+          "AliasArn": "arn:aws:lex:us-east-1:441700732419:bot-alias/XYLIXK5VRO/MFOMMMKJPI"
+        },
+        "LexSessionAttributes": {
+          "member_id": "$.Attributes.member_id",
+          "first_name": "$.Attributes.first_name",
+          "last_name": "$.Attributes.last_name",
+          "plan_name": "$.Attributes.plan_name",
+          "lob": "$.Attributes.lob",
+          "x-amz-lex:q-in-connect:session-arn": "$.Wisdom.SessionArn"
+        }
+      },
+      "Transitions": {
+        "NextAction": "PoliteClose",
+        "Errors": [
+          {
+            "NextAction": "PoliteClose",
+            "ErrorType": "NoMatchingCondition"
+          },
+          {
+            "NextAction": "PoliteClose",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "AuthFailedMessage",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "I could not find that member ID. Let's try once more."
+      },
+      "Transitions": {
+        "NextAction": "RetryGetMemberId"
+      }
+    },
+    {
+      "Identifier": "RetryGetMemberId",
+      "Type": "GetParticipantInput",
+      "Parameters": {
+        "StoreInput": "True",
+        "InputTimeLimitSeconds": "10",
+        "Text": "Please enter your eleven digit member ID, followed by the pound key.",
+        "InputValidation": {
+          "CustomValidation": {
+            "MaximumLength": "11"
+          }
+        }
+      },
+      "Transitions": {
+        "NextAction": "InvokeAuthRetry",
+        "Errors": [
+          {
+            "NextAction": "FinalFail",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "InvokeAuthRetry",
+      "Type": "InvokeLambdaFunction",
+      "Parameters": {
+        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:441700732419:function:centene-demo-auth",
+        "InvocationTimeLimitSeconds": "8",
+        "ResponseValidation": {
+          "ResponseType": "STRING_MAP"
+        },
+        "LambdaInvocationAttributes": {
+          "MemberId": "$.StoredCustomerInput"
+        }
+      },
+      "Transitions": {
+        "NextAction": "CheckAuthStatus2",
+        "Errors": [
+          {
+            "NextAction": "FinalFail",
+            "ErrorType": "NoMatchingError"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "CheckAuthStatus2",
+      "Type": "Compare",
+      "Parameters": {
+        "ComparisonValue": "$.External.auth_status"
+      },
+      "Transitions": {
+        "NextAction": "FinalFail",
+        "Conditions": [
+          {
+            "NextAction": "SetSessionAttributes",
+            "Condition": {
+              "Operator": "Equals",
+              "Operands": [
+                "success"
+              ]
+            }
+          }
+        ],
+        "Errors": [
+          {
+            "NextAction": "FinalFail",
+            "ErrorType": "NoMatchingCondition"
+          }
+        ]
+      }
+    },
+    {
+      "Identifier": "FinalFail",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "I'm having trouble verifying your account. Please call back later. Goodbye."
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "PoliteClose",
+      "Type": "MessageParticipant",
+      "Parameters": {
+        "Text": "Thanks for calling Generic Health Plan. Have a great day."
+      },
+      "Transitions": {
+        "NextAction": "Disconnect"
+      }
+    },
+    {
+      "Identifier": "Disconnect",
+      "Type": "DisconnectParticipant",
+      "Parameters": {},
+      "Transitions": {}
+    }
+  ]
+}

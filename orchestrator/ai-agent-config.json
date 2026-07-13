@@ -1,0 +1,44 @@
+{
+  "orchestrationAIAgentConfiguration": {
+    "orchestrationAIPromptId": "PROMPT_ID",
+    "connectInstanceArn": "arn:aws:connect:us-east-1:441700732419:instance/d232199a-e1f4-4d84-a77e-10f8bfc6468f",
+    "locale": "en_US",
+    "toolConfigurations": [
+      {
+        "toolName": "verify_eligibility",
+        "toolId": "verify_eligibility",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "instruction": {
+          "instruction": "Use when the member's coverage, plan, or current PCP is relevant. Always pass member_id."
+        }
+      },
+      {
+        "toolName": "search_provider_directory",
+        "toolId": "search_provider_directory",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "instruction": {
+          "instruction": "Use when the member wants to find or switch to a provider. Filter by the member's zip and any stated language/gender/specialty preferences. Always pass member_id."
+        }
+      },
+      {
+        "toolName": "check_claim_status",
+        "toolId": "check_claim_status",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "instruction": {
+          "instruction": "Use when the member mentions a bill, claim, or EOB. Always pass member_id."
+        }
+      },
+      {
+        "toolName": "change_pcp",
+        "toolId": "change_pcp",
+        "toolType": "MODEL_CONTEXT_PROTOCOL",
+        "instruction": {
+          "instruction": "Propose only after the member has chosen a specific provider. Always pass member_id."
+        },
+        "userInteractionConfiguration": {
+          "isUserConfirmationRequired": true
+        }
+      }
+    ]
+  }
+}

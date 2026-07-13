@@ -1,0 +1,117 @@
+{
+  "claims": [
+    {
+      "claim_id": "CLM2025031500123",
+      "member_id": "99999100001",
+      "provider_npi": "1234567890",
+      "provider_name": "Dr. Smith",
+      "service_date": "2025-03-15",
+      "service_description": "Office visit, established patient",
+      "place_of_service": "office",
+      "in_network": true,
+      "status": "paid",
+      "billed_amount": 240.00,
+      "allowed_amount": 190.00,
+      "plan_paid": 70.00,
+      "member_responsibility": 120.00,
+      "responsibility_breakdown": {
+        "deductible": 120.00,
+        "copay": 0.00,
+        "coinsurance": 0.00,
+        "non_covered": 0.00
+      },
+      "denial_reason": null,
+      "appeal_eligible": false
+    },
+    {
+      "claim_id": "CLM2025020800456",
+      "member_id": "99999100001",
+      "provider_npi": "9988776655",
+      "provider_name": "Lakeside Lab",
+      "service_date": "2025-02-08",
+      "service_description": "Routine blood panel",
+      "place_of_service": "outpatient",
+      "in_network": true,
+      "status": "paid",
+      "billed_amount": 180.00,
+      "allowed_amount": 95.00,
+      "plan_paid": 95.00,
+      "member_responsibility": 0.00,
+      "responsibility_breakdown": {
+        "deductible": 0.00,
+        "copay": 0.00,
+        "coinsurance": 0.00,
+        "non_covered": 0.00
+      },
+      "denial_reason": null,
+      "appeal_eligible": false
+    },
+    {
+      "claim_id": "CLM2025040200789",
+      "member_id": "99999100004",
+      "provider_npi": "7766554433",
+      "provider_name": "Memorial Hospital",
+      "service_date": "2025-04-02",
+      "service_description": "Emergency department visit",
+      "place_of_service": "emergency",
+      "in_network": false,
+      "status": "denied",
+      "billed_amount": 1850.00,
+      "allowed_amount": 0.00,
+      "plan_paid": 0.00,
+      "member_responsibility": 0.00,
+      "responsibility_breakdown": {
+        "deductible": 0.00,
+        "copay": 0.00,
+        "coinsurance": 0.00,
+        "non_covered": 0.00
+      },
+      "denial_reason": "out_of_network_no_authorization",
+      "denial_explanation": "Service was provided by a non-participating provider without prior authorization for non-emergency care.",
+      "appeal_eligible": true
+    },
+    {
+      "claim_id": "CLM2025041000234",
+      "member_id": "99999100004",
+      "provider_npi": "6655443322",
+      "provider_name": "Dr. Patel",
+      "service_date": "2025-04-10",
+      "service_description": "Specialist consultation, cardiology",
+      "place_of_service": "office",
+      "in_network": true,
+      "status": "in_process",
+      "billed_amount": 320.00,
+      "allowed_amount": null,
+      "plan_paid": null,
+      "member_responsibility": null,
+      "expected_completion": "2025-05-10",
+      "denial_reason": null,
+      "appeal_eligible": false
+    },
+    {
+      "claim_id": "CLM2026061800991",
+      "member_id": "99999100001",
+      "provider_npi": "9999998888",
+      "provider_name": "Midlands Imaging",
+      "service_date": "2026-06-18",
+      "service_description": "MRI imaging",
+      "place_of_service": "outpatient",
+      "in_network": true,
+      "status": "denied",
+      "billed_amount": 412.00,
+      "allowed_amount": 0.00,
+      "plan_paid": 0.00,
+      "member_responsibility": 0.00,
+      "responsibility_breakdown": {
+        "deductible": 0.00,
+        "copay": 0.00,
+        "coinsurance": 0.00,
+        "non_covered": 0.00
+      },
+      "denial_code": "CO-197",
+      "denial_reason": "Precertification/authorization absent",
+      "denial_explanation": "Service requires prior authorization before treatment.",
+      "appeal_eligible": true
+    }
+  ]
+}
